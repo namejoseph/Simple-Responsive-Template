@@ -1,1 +1,304 @@
-<html></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simple Responsive Template</title>
+
+  <!-- Font Awesome (social icons) -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
+
+  <style>
+    /* Reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+
+    :root{
+      --header-h: 84px;
+      --footer-h: 84px;
+      --pad: clamp(16px, 2.5vw, 28px);
+      --text: rgba(255,255,255,.92);
+      --text-dim: rgba(255,255,255,.78);
+      --shadow: 0 10px 30px rgba(0,0,0,.18);
+    }
+
+    /* Page layout (header / body / footer) */
+    body{
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    header{
+      height: var(--header-h);
+      background: #c81f2b; /* red */
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--pad);
+      position: sticky; /* stays visible while scrolling */
+      top: 0;
+      z-index: 20;
+    }
+
+    main{
+      flex: 1;
+      background: #0b5e3c; /* green */
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      min-height: calc(100vh - var(--header-h) - var(--footer-h));
+      padding: var(--pad);
+    }
+
+    footer{
+      height: var(--footer-h);
+      background: #ff6a1a; /* orange */
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      padding: 0 var(--pad);
+    }
+
+    /* Header content */
+    .brand{
+      font-size: 28px;
+      letter-spacing: .2px;
+      font-weight: 600;
+      line-height: 1;
+      user-select: none;
+    }
+
+    /* Desktop nav */
+    .nav-desktop{
+      display: flex;
+      gap: 18px;
+      align-items: center;
+    }
+    .nav-desktop a{
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+      opacity: .9;
+    }
+    .nav-desktop a:hover{ opacity: 1; text-decoration: underline; }
+
+    /* Hamburger button (same button becomes X) */
+    .menu-btn{
+      width: 48px;
+      height: 48px;
+      display: none; /* shown on mobile */
+      border: 0;
+      border-radius: 12px;
+      background: rgba(255,255,255,.12);
+      color: white;
+      cursor: pointer;
+      position: relative;
+      box-shadow: 0 8px 18px rgba(0,0,0,.14);
+    }
+    .menu-btn:focus-visible{
+      outline: 3px solid rgba(255,255,255,.55);
+      outline-offset: 2px;
+    }
+
+    .icon-bars{
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+    }
+    .icon-bars span{
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: rgba(255,255,255,.95);
+      border-radius: 2px;
+      transition: transform 220ms ease, opacity 180ms ease;
+      position: absolute;
+    }
+    .icon-bars span:nth-child(1){ transform: translateY(-7px); }
+    .icon-bars span:nth-child(2){ transform: translateY(0); }
+    .icon-bars span:nth-child(3){ transform: translateY(7px); }
+
+    /* When open, morph hamburger to X (same position) */
+    body.menu-open .icon-bars span:nth-child(1){ transform: rotate(45deg); }
+    body.menu-open .icon-bars span:nth-child(2){ opacity: 0; }
+    body.menu-open .icon-bars span:nth-child(3){ transform: rotate(-45deg); }
+
+    /* Mobile overlay menu (fade in 1s) */
+    .menu-overlay{
+      position: fixed;
+      inset: 0;
+      z-index: 15; /* under header (20) so X stays exactly in header spot */
+      background: rgba(55, 79, 255, .96); /* blue */
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 1000ms ease; /* 1s fade */
+    }
+    body.menu-open .menu-overlay{
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    /* Center links + icons on the Y-axis */
+    .menu-overlay .menu-inner{
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center; /* vertical centering */
+      align-items: center;
+      gap: 34px;
+      padding: calc(var(--header-h) + 24px) var(--pad) calc(var(--footer-h) + 24px);
+      text-align: center;
+    }
+
+    .menu-links{
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .menu-links a{
+      color: white;
+      text-decoration: none;
+      font-size: clamp(22px, 4.6vw, 40px);
+      font-weight: 500;
+      letter-spacing: .2px;
+      opacity: .95;
+    }
+    .menu-links a:hover{ opacity: 1; text-decoration: underline; }
+
+    .menu-social{
+      display: flex;
+      gap: 22px;
+      align-items: center;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    .menu-social a{
+      color: white;
+      font-size: 34px;
+      opacity: .9;
+      text-decoration: none;
+    }
+    .menu-social a:hover{ opacity: 1; }
+
+    /* Responsive rules */
+    @media (max-width: 860px){
+      .nav-desktop{ display: none; }
+      .menu-btn{ display: inline-grid; place-items: center; }
+    }
+
+    /* Optional: prevent background scroll when menu is open */
+    body.menu-open{
+      overflow: hidden;
+    }
+
+    /* Demo labels */
+    .label{
+      font-size: clamp(24px, 4vw, 56px);
+      opacity: .95;
+      letter-spacing: .2px;
+      user-select: none;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="brand">header</div>
+
+    <nav class="nav-desktop" aria-label="Primary">
+      <a href="#home">home</a>
+      <a href="#about">about</a>
+      <a href="#services">services</a>
+      <a href="#history">history</a>
+      <a href="#team">team</a>
+      <a href="#photos">photos</a>
+      <a href="#video">video</a>
+      <a href="#contact">contact</a>
+    </nav>
+
+    <!-- Same button becomes hamburger / X (same position) -->
+    <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+      <span class="icon-bars" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </span>
+    </button>
+  </header>
+
+  <!-- Mobile full-screen overlay -->
+  <div class="menu-overlay" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile menu">
+    <div class="menu-inner">
+      <div class="menu-links">
+        <a href="#home" data-close>home</a>
+        <a href="#about" data-close>about</a>
+        <a href="#services" data-close>services</a>
+        <a href="#history" data-close>history</a>
+        <a href="#team" data-close>team</a>
+        <a href="#photos" data-close>photos</a>
+        <a href="#video" data-close>video</a>
+        <a href="#contact" data-close>contact</a>
+      </div>
+
+      <div class="menu-social" aria-label="Social links">
+        <a href="#" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <main id="home">
+    <div class="label">body</div>
+  </main>
+
+  <footer>
+    <div class="label" style="font-size: clamp(20px, 3vw, 44px);">footer</div>
+  </footer>
+
+  <script>
+    const body = document.body;
+    const menuBtn = document.getElementById('menuBtn');
+    const overlay = document.getElementById('mobileMenu');
+
+    function setOpen(isOpen) {
+      body.classList.toggle('menu-open', isOpen);
+      menuBtn.setAttribute('aria-expanded', String(isOpen));
+      menuBtn.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+    }
+
+    menuBtn.addEventListener('click', () => {
+      setOpen(!body.classList.contains('menu-open'));
+    });
+
+    // Close on link click
+    overlay.addEventListener('click', (e) => {
+      const link = e.target.closest('[data-close]');
+      if (link) setOpen(false);
+    });
+
+    // Close if user clicks the overlay background
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) setOpen(false);
+    });
+
+    // Escape key closes
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && body.classList.contains('menu-open')) setOpen(false);
+    });
+
+    // Optional: auto-close if resizing up to desktop
+    window.addEventListener('resize', () => {
+      if (window.matchMedia('(min-width: 861px)').matches) setOpen(false);
+    });
+  </script>
+</body>
+</html>
