@@ -1,365 +1,320 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Base Template (Full-Height Mobile Menu)</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simple Template — Full-Screen Mobile Menu</title>
 
-    <!-- Font Awesome (social icons) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- Font Awesome (social icons) -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
 
-    <style>
-        /* Reset */
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-        }
+  <style>
+    /* Reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
 
-        html,
-        body {
-            height: 100%;
-        }
+    :root{
+      --header-h: 84px;
+      --footer-h: 84px;
+      --pad: clamp(16px, 2.5vw, 28px);
+    }
 
-        body {
-            margin: 0;
-            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-        }
+    /* Page layout */
+    body{
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
 
-        :root {
-            --header-h: 84px;
-            --footer-h: 84px;
-            --pad: clamp(16px, 2.5vw, 28px);
-        }
+    header{
+      height: var(--header-h);
+      background: #c81f2b; /* placeholder */
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--pad);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
 
-        body {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-        }
+    main{
+      flex: 1;
+      background: #0b5e3c; /* placeholder */
+      color: #fff;
+      display: grid;
+      place-items: center;
+      min-height: calc(100vh - var(--header-h) - var(--footer-h));
+      padding: var(--pad);
+    }
 
-        header {
-            height: var(--header-h);
-            background: #c81f2b;
-            /* placeholder */
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 var(--pad);
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
+    footer{
+      height: var(--footer-h);
+      background: #ff6a1a; /* placeholder */
+      color: #fff;
+      display: grid;
+      place-items: center;
+      padding: 0 var(--pad);
+    }
 
-        main {
-            flex: 1;
-            background: #0b5e3c;
-            /* placeholder */
-            color: #fff;
-            display: grid;
-            place-items: center;
-            min-height: calc(100vh - var(--header-h) - var(--footer-h));
-            padding: var(--pad);
-        }
+    /* Header content */
+    .brand{
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1;
+      user-select: none;
+    }
 
-        footer {
-            height: var(--footer-h);
-            background: #ff6a1a;
-            /* placeholder */
-            color: #fff;
-            display: grid;
-            place-items: center;
-            padding: 0 var(--pad);
-        }
+    /* Desktop nav */
+    .nav-desktop{
+      display: flex;
+      gap: 18px;
+      align-items: center;
+    }
+    .nav-desktop a{
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .nav-desktop a:hover{ text-decoration: underline; }
 
-        .brand {
-            font-size: 28px;
-            font-weight: 600;
-            line-height: 1;
-            user-select: none;
-        }
+    /* Hamburger / X button (no border) */
+    .menu-btn{
+      width: 56px;
+      height: 56px;
+      display: none; /* mobile only */
+      border: 0;
+      background: transparent;
+      color: #fff;
+      cursor: pointer;
+      position: relative;
+      padding: 0;
+    }
+    .menu-btn:focus-visible{
+      outline: 2px solid #fff;
+      outline-offset: 4px;
+    }
 
-        /* Desktop nav */
-        .nav-desktop {
-            display: flex;
-            gap: 18px;
-            align-items: center;
-        }
+    .icon-bars{
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+    }
+    .icon-bars span{
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: #fff;
+      border-radius: 2px;
+      transition: transform 220ms ease;
+      position: absolute;
+      transform-origin: center;
+    }
+    .icon-bars span:nth-child(1){ transform: translateY(-8px); }
+    .icon-bars span:nth-child(2){ transform: translateY(0); }
+    .icon-bars span:nth-child(3){ transform: translateY(8px); }
 
-        .nav-desktop a {
-            color: #fff;
-            text-decoration: none;
-            font-weight: 500;
-        }
+    /* Morph to X (no opacity property used) */
+    body.menu-open .icon-bars span:nth-child(1){ transform: rotate(45deg); }
+    body.menu-open .icon-bars span:nth-child(2){ transform: scaleX(0); }
+    body.menu-open .icon-bars span:nth-child(3){ transform: rotate(-45deg); }
 
-        .nav-desktop a:hover {
-            text-decoration: underline;
-        }
+    /* Full-screen mobile menu overlay
+       - Covers whole screen
+       - Grid: header row + remaining space row
+       - 1s fade-in */
+    .menu-overlay{
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: #374fff; /* placeholder */
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 1000ms ease;
 
-        /* Hamburger / X button */
-        .menu-btn {
-            width: 56px;
-            height: 56px;
-            display: none;
-            border: 0;
-            background: transparent;
-            color: #fff;
-            cursor: pointer;
-            position: relative;
-            padding: 0;
-        }
+      display: grid;
+      grid-template-rows: var(--header-h) 1fr;
+    }
+    body.menu-open .menu-overlay{
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
 
-        .menu-btn:focus-visible {
-            outline: 2px solid #fff;
-            outline-offset: 4px;
-        }
+    /* Overlay header (transparent so it doesn't look like a bar) */
+    .menu-header{
+      height: var(--header-h);
+      background: transparent;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--pad);
+    }
 
-        .icon-bars {
-            position: absolute;
-            inset: 0;
-            display: grid;
-            place-items: center;
-        }
+    /* Center links + icons in the space UNDER the header row */
+    .menu-inner{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 34px;
+      padding: var(--pad);
+      text-align: center;
+    }
 
-        .icon-bars span {
-            display: block;
-            width: 24px;
-            height: 2px;
-            background: #fff;
-            border-radius: 2px;
-            transition: transform 220ms ease;
-            position: absolute;
-            transform-origin: center;
-        }
+    .menu-links{
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .menu-links a{
+      color: #fff;
+      text-decoration: none;
+      font-size: clamp(22px, 4.6vw, 40px);
+      font-weight: 600;
+    }
+    .menu-links a:hover{ text-decoration: underline; }
 
-        .icon-bars span:nth-child(1) {
-            transform: translateY(-8px);
-        }
+    .menu-social{
+      display: flex;
+      gap: 22px;
+      align-items: center;
+      justify-content: center;
+      margin-top: 12px;
+    }
+    .menu-social a{
+      color: #fff;
+      font-size: 34px;
+      text-decoration: none;
+    }
+    .menu-social a:hover{ text-decoration: underline; }
 
-        .icon-bars span:nth-child(2) {
-            transform: translateY(0);
-        }
+    /* Responsive rules */
+    @media (max-width: 860px){
+      .nav-desktop{ display: none; }
+      .menu-btn{ display: inline-grid; place-items: center; }
+    }
 
-        .icon-bars span:nth-child(3) {
-            transform: translateY(8px);
-        }
+    /* Prevent background scroll when menu is open */
+    body.menu-open{
+      overflow: hidden;
+    }
 
-        /* Morph to X (no opacity needed) */
-        body.menu-open .icon-bars span:nth-child(1) {
-            transform: rotate(45deg);
-        }
-
-        body.menu-open .icon-bars span:nth-child(2) {
-            transform: scaleX(0);
-        }
-
-        body.menu-open .icon-bars span:nth-child(3) {
-            transform: rotate(-45deg);
-        }
-
-        /* Mobile overlay menu: FULL HEIGHT, sits above header */
-        .menu-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 1000;
-            /* above everything */
-            background: #374fff;
-            /* placeholder */
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-            transition: opacity 1000ms ease;
-            /* 1s fade-in */
-        }
-
-        body.menu-open .menu-overlay {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-        }
-
-        /* Menu has its own "header bar" inside the overlay */
-        .menu-header {
-            height: var(--header-h);
-            background: #c81f2b;
-            /* placeholder (same as site header) */
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 var(--pad);
-        }
-
-        /* The overlay content uses the rest of the screen */
-        .menu-inner {
-            height: calc(100vh - var(--header-h));
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            /* center on y-axis */
-            align-items: center;
-            gap: 34px;
-            padding: var(--pad);
-            text-align: center;
-        }
-
-        .menu-links {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
-
-        .menu-links a {
-            color: #fff;
-            text-decoration: none;
-            font-size: clamp(22px, 4.6vw, 40px);
-            font-weight: 500;
-        }
-
-        .menu-links a:hover {
-            text-decoration: underline;
-        }
-
-        .menu-social {
-            display: flex;
-            gap: 22px;
-            align-items: center;
-            justify-content: center;
-            margin-top: 12px;
-        }
-
-        .menu-social a {
-            color: #fff;
-            font-size: 34px;
-            text-decoration: none;
-        }
-
-        .menu-social a:hover {
-            text-decoration: underline;
-        }
-
-        /* Responsive rules */
-        @media (max-width: 860px) {
-            .nav-desktop {
-                display: none;
-            }
-
-            .menu-btn {
-                display: inline-grid;
-                place-items: center;
-            }
-        }
-
-        /* Prevent background scroll when menu is open */
-        body.menu-open {
-            overflow: hidden;
-        }
-
-        .label {
-            font-size: clamp(24px, 4vw, 56px);
-            user-select: none;
-        }
-    </style>
+    /* Demo labels */
+    .label{
+      font-size: clamp(24px, 4vw, 56px);
+      user-select: none;
+    }
+  </style>
 </head>
 
 <body>
-    <!-- Normal site header (stays as-is) -->
-    <header>
-        <div class="brand">header</div>
+  <!-- Normal site header -->
+  <header>
+    <div class="brand">header</div>
 
-        <nav class="nav-desktop" aria-label="Primary">
-            <a href="#home">home</a>
-            <a href="#about">about</a>
-            <a href="#services">services</a>
-            <a href="#history">history</a>
-            <a href="#team's">team</a>
-            <a href="#photos">photos</a>
-            <a href="#video">video</a>
-            <a href="#contact">contact</a>
-        </nav>
+    <nav class="nav-desktop" aria-label="Primary">
+      <a href="#home">home</a>
+      <a href="#about">about</a>
+      <a href="#services">services</a>
+      <a href="#history">history</a>
+      <a href="#team">team</a>
+      <a href="#photos">photos</a>
+      <a href="#video">video</a>
+      <a href="#contact">contact</a>
+    </nav>
 
-        <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
-            <span class="icon-bars" aria-hidden="true">
-                <span></span><span></span><span></span>
-            </span>
-        </button>
-    </header>
+    <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+      <span class="icon-bars" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </span>
+    </button>
+  </header>
 
-    <!-- Full-height mobile menu overlay with its OWN header bar -->
-    <div class="menu-overlay" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile menu">
-        <div class="menu-header">
-            <div class="brand">header</div>
+  <!-- Full-screen mobile menu overlay -->
+  <div class="menu-overlay" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile menu">
+    <div class="menu-header">
+      <div class="brand">header</div>
 
-            <!-- Close button in same top-right spot -->
-            <button class="menu-btn" id="closeBtn" aria-label="Close menu">
-                <span class="icon-bars" aria-hidden="true">
-                    <span></span><span></span><span></span>
-                </span>
-            </button>
-        </div>
-
-        <div class="menu-inner">
-            <div class="menu-links">
-                <a href="#home" data-close>home</a>
-                <a href="#about" data-close>about</a>
-                <a href="#services" data-close>services</a>
-                <a href="#history" data-close>history</a>
-                <a href="#team" data-close>team</a>
-                <a href="#photos" data-close>photos</a>
-                <a href="#video" data-close>video</a>
-                <a href="#contact" data-close>contact</a>
-            </div>
-
-            <div class="menu-social" aria-label="Social links">
-                <a href="#" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
-                <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
-            </div>
-        </div>
+      <button class="menu-btn" id="closeBtn" aria-label="Close menu">
+        <span class="icon-bars" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </span>
+      </button>
     </div>
 
-    <main id="home">
-        <div class="label">body</div>
-    </main>
+    <div class="menu-inner">
+      <div class="menu-links">
+        <a href="#home" data-close>home</a>
+        <a href="#about" data-close>about</a>
+        <a href="#services" data-close>services</a>
+        <a href="#history" data-close>history</a>
+        <a href="#team" data-close>team</a>
+        <a href="#photos" data-close>photos</a>
+        <a href="#video" data-close>video</a>
+        <a href="#contact" data-close>contact</a>
+      </div>
 
-    <footer>
-        <div class="label" style="font-size: clamp(20px, 3vw, 44px);">footer</div>
-    </footer>
+      <div class="menu-social" aria-label="Social links">
+        <a href="#" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+      </div>
+    </div>
+  </div>
 
-    <script>
-        const body = document.body;
-        const menuBtn = document.getElementById('menuBtn');
-        const closeBtn = document.getElementById('closeBtn');
-        const overlay = document.getElementById('mobileMenu');
+  <main id="home">
+    <div class="label">body</div>
+  </main>
 
-        function setOpen(isOpen) {
-            body.classList.toggle('menu-open', isOpen);
-            menuBtn.setAttribute('aria-expanded', String(isOpen));
-            menuBtn.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
-        }
+  <footer>
+    <div class="label" style="font-size: clamp(20px, 3vw, 44px);">footer</div>
+  </footer>
 
-        menuBtn.addEventListener('click', () => setOpen(true));
-        closeBtn.addEventListener('click', () => setOpen(false));
+  <script>
+    const body = document.body;
+    const menuBtn = document.getElementById('menuBtn');
+    const closeBtn = document.getElementById('closeBtn');
+    const overlay = document.getElementById('mobileMenu');
 
-        // Close on link click
-        overlay.addEventListener('click', (e) => {
-            const link = e.target.closest('[data-close]');
-            if (link) setOpen(false);
-        });
+    function setOpen(isOpen) {
+      body.classList.toggle('menu-open', isOpen);
+      menuBtn.setAttribute('aria-expanded', String(isOpen));
+      menuBtn.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+    }
 
-        // Escape closes
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && body.classList.contains('menu-open')) setOpen(false);
-        });
+    menuBtn.addEventListener('click', () => setOpen(true));
+    closeBtn.addEventListener('click', () => setOpen(false));
 
-        // Auto-close if resizing up to desktop
-        window.addEventListener('resize', () => {
-            if (window.matchMedia('(min-width: 861px)').matches) setOpen(false);
-        });
-    </script>
+    // Close on link click
+    overlay.addEventListener('click', (e) => {
+      const link = e.target.closest('[data-close]');
+      if (link) setOpen(false);
+    });
+
+    // Optional: click outside the menu-inner closes (clicking overlay background)
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) setOpen(false);
+    });
+
+    // Escape closes
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && body.classList.contains('menu-open')) setOpen(false);
+    });
+
+    // Auto-close if resizing up to desktop
+    window.addEventListener('resize', () => {
+      if (window.matchMedia('(min-width: 861px)').matches) setOpen(false);
+    });
+  </script>
 </body>
-
 </html>
