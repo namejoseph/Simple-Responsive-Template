@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Simple Responsive Template</title>
+  <title>Base Template (No Opacity Styling)</title>
 
   <!-- Font Awesome (social icons) -->
   <link
@@ -21,12 +21,9 @@
       --header-h: 84px;
       --footer-h: 84px;
       --pad: clamp(16px, 2.5vw, 28px);
-      --text: rgba(255,255,255,.92);
-      --text-dim: rgba(255,255,255,.78);
-      --shadow: 0 10px 30px rgba(0,0,0,.18);
     }
 
-    /* Page layout (header / body / footer) */
+    /* Layout */
     body{
       min-height: 100vh;
       display: flex;
@@ -36,21 +33,21 @@
 
     header{
       height: var(--header-h);
-      background: #c81f2b; /* red */
-      color: var(--text);
+      background: #c81f2b; /* placeholder */
+      color: #fff;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 var(--pad);
-      position: sticky; /* stays visible while scrolling */
+      position: sticky;
       top: 0;
       z-index: 20;
     }
 
     main{
       flex: 1;
-      background: #0b5e3c; /* green */
-      color: var(--text);
+      background: #0b5e3c; /* placeholder */
+      color: #fff;
       display: grid;
       place-items: center;
       min-height: calc(100vh - var(--header-h) - var(--footer-h));
@@ -59,8 +56,8 @@
 
     footer{
       height: var(--footer-h);
-      background: #ff6a1a; /* orange */
-      color: var(--text);
+      background: #ff6a1a; /* placeholder */
+      color: #fff;
       display: grid;
       place-items: center;
       padding: 0 var(--pad);
@@ -69,7 +66,6 @@
     /* Header content */
     .brand{
       font-size: 28px;
-      letter-spacing: .2px;
       font-weight: 600;
       line-height: 1;
       user-select: none;
@@ -82,29 +78,30 @@
       align-items: center;
     }
     .nav-desktop a{
-      color: var(--text);
+      color: #fff;
       text-decoration: none;
       font-weight: 500;
-      opacity: .9;
     }
-    .nav-desktop a:hover{ opacity: 1; text-decoration: underline; }
+    .nav-desktop a:hover{
+      text-decoration: underline;
+    }
 
-    /* Hamburger button (same button becomes X) */
+    /* Mobile button (hamburger becomes X in same position) */
     .menu-btn{
       width: 48px;
       height: 48px;
-      display: none; /* shown on mobile */
-      border: 0;
+      display: none;
+      border: 2px solid #fff;
       border-radius: 12px;
-      background: rgba(255,255,255,.12);
-      color: white;
+      background: transparent;
+      color: #fff;
       cursor: pointer;
       position: relative;
-      box-shadow: 0 8px 18px rgba(0,0,0,.14);
+      padding: 0;
     }
     .menu-btn:focus-visible{
-      outline: 3px solid rgba(255,255,255,.55);
-      outline-offset: 2px;
+      outline: 3px solid #fff;
+      outline-offset: 3px;
     }
 
     .icon-bars{
@@ -117,7 +114,7 @@
       display: block;
       width: 22px;
       height: 2px;
-      background: rgba(255,255,255,.95);
+      background: #fff;
       border-radius: 2px;
       transition: transform 220ms ease, opacity 180ms ease;
       position: absolute;
@@ -126,21 +123,20 @@
     .icon-bars span:nth-child(2){ transform: translateY(0); }
     .icon-bars span:nth-child(3){ transform: translateY(7px); }
 
-    /* When open, morph hamburger to X (same position) */
     body.menu-open .icon-bars span:nth-child(1){ transform: rotate(45deg); }
-    body.menu-open .icon-bars span:nth-child(2){ opacity: 0; }
+    body.menu-open .icon-bars span:nth-child(2){ opacity: 0; } /* purely mechanical for morph */
     body.menu-open .icon-bars span:nth-child(3){ transform: rotate(-45deg); }
 
     /* Mobile overlay menu (fade in 1s) */
     .menu-overlay{
       position: fixed;
       inset: 0;
-      z-index: 15; /* under header (20) so X stays exactly in header spot */
-      background: rgba(55, 79, 255, .96); /* blue */
+      z-index: 15; /* under header so the button stays in same spot */
+      background: #374fff; /* placeholder */
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
-      transition: opacity 1000ms ease; /* 1s fade */
+      transition: opacity 1000ms ease; /* required fade */
     }
     body.menu-open .menu-overlay{
       opacity: 1;
@@ -148,12 +144,12 @@
       pointer-events: auto;
     }
 
-    /* Center links + icons on the Y-axis */
-    .menu-overlay .menu-inner{
+    /* Center links + icons vertically */
+    .menu-inner{
       height: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: center; /* vertical centering */
+      justify-content: center;  /* y-axis centering */
       align-items: center;
       gap: 34px;
       padding: calc(var(--header-h) + 24px) var(--pad) calc(var(--footer-h) + 24px);
@@ -166,14 +162,14 @@
       gap: 18px;
     }
     .menu-links a{
-      color: white;
+      color: #fff;
       text-decoration: none;
       font-size: clamp(22px, 4.6vw, 40px);
       font-weight: 500;
-      letter-spacing: .2px;
-      opacity: .95;
     }
-    .menu-links a:hover{ opacity: 1; text-decoration: underline; }
+    .menu-links a:hover{
+      text-decoration: underline;
+    }
 
     .menu-social{
       display: flex;
@@ -183,12 +179,13 @@
       margin-top: 10px;
     }
     .menu-social a{
-      color: white;
+      color: #fff;
       font-size: 34px;
-      opacity: .9;
       text-decoration: none;
     }
-    .menu-social a:hover{ opacity: 1; }
+    .menu-social a:hover{
+      text-decoration: underline;
+    }
 
     /* Responsive rules */
     @media (max-width: 860px){
@@ -196,7 +193,7 @@
       .menu-btn{ display: inline-grid; place-items: center; }
     }
 
-    /* Optional: prevent background scroll when menu is open */
+    /* Prevent background scroll when menu is open */
     body.menu-open{
       overflow: hidden;
     }
@@ -204,8 +201,6 @@
     /* Demo labels */
     .label{
       font-size: clamp(24px, 4vw, 56px);
-      opacity: .95;
-      letter-spacing: .2px;
       user-select: none;
     }
   </style>
@@ -226,7 +221,7 @@
       <a href="#contact">contact</a>
     </nav>
 
-    <!-- Same button becomes hamburger / X (same position) -->
+    <!-- Same button becomes hamburger/X (same position) -->
     <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
       <span class="icon-bars" aria-hidden="true">
         <span></span><span></span><span></span>
@@ -290,12 +285,12 @@
       if (e.target === overlay) setOpen(false);
     });
 
-    // Escape key closes
+    // Escape closes
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && body.classList.contains('menu-open')) setOpen(false);
     });
 
-    // Optional: auto-close if resizing up to desktop
+    // Auto-close if resizing up to desktop
     window.addEventListener('resize', () => {
       if (window.matchMedia('(min-width: 861px)').matches) setOpen(false);
     });
